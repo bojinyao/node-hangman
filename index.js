@@ -90,7 +90,7 @@ function promptNextGame() {
         inquirer.prompt([
             {
                 type: 'confirm',
-                message: `Start new game?`,
+                message: `Start new round?`,
                 name: 'newGame'
             }
         ]).then(answer => {
