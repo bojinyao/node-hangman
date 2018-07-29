@@ -1,7 +1,7 @@
 const Word = require("./Word");
 const inquirer = require("inquirer");
 const TRIES = 10;
-const CHOICES = shuffle([
+var CHOICES = shuffle([
     "hello world", "game of thrones"
 ])
 
@@ -30,10 +30,12 @@ function playGame(tries, wordObj) {
     console.log(wordObj.toString());
     if (wordObj.wordCorrect) {
         console.log(`You guessed it!`)
+        promptNextGame();
         return true;
     }
     if (tries < 1) {
-        console.log(`Game Over!`);
+        console.log(`You lost this round!`);
+        promptNextGame();
         return true;
     }
     inquirer.prompt([
@@ -42,16 +44,16 @@ function playGame(tries, wordObj) {
             message: `Guess a letter:`,
             name: 'guess',
             validate: (input) => {
-                return /[a-z]{1}/i.test(input);
+                return input.length === 1 && /[a-z]{1}/i.test(input) ? true: `Please only guess one letter at a time!`;
             }
         }
     ]).then((answer) => {
         let guessResult = wordObj.makeGuess(answer.guess);
         if (guessResult) {
-            console.log(`Correct! Tries: ${tries}`);
+            console.log(`Correct! Tries left: ${tries}`);
             playGame(tries, wordObj);
         } else {
-            console.log(`NOT Correct! Tries: ${tries - 1}`);
+            console.log(`NOT Correct! Tries left: ${tries - 1}`);
             playGame(tries - 1, wordObj);
         }
 
@@ -59,37 +61,26 @@ function playGame(tries, wordObj) {
 
 }
 
-function main(arr) {
-    if (!arr) {
-        return;
-    }
-    let currWord = new Word(arr[0]);
-    inquirer.prompt([
-        {
-            type: 'confirm',
-            message: `Start new game?`,
-            name: 'newGame'
-        }
-    ]).then(answer => {
-        if (answer.newGame) {
-            let roundOver;
-            roundOver = playGame(TRIES, currWord);
-            while (roundOver !== true) {
-                setTimeout(() => {
-
-                }, 1000);
+function promptNextGame() {
+    if (CHOICES.length > 0) {
+        inquirer.prompt([
+            {
+                type: 'confirm',
+                message: `Start new game?`,
+                name: 'newGame'
             }
-            if (arr.length > 1) {
-                main(arr.slice(1));
+        ]).then(answer => {
+            if (answer.newGame) {
+                let currWord = new Word(CHOICES[0]);
+                CHOICES = CHOICES.slice(1);
+                playGame(TRIES, currWord);
             } else {
-                console.log(`You've played all the games!`);
-                return;
+                console.log(`You're always welcome back!`);
             }
-        } else {
-            console.log(`You're always welcome back!`);
-        }
-    })
+        })
+    } else {
+        console.log(`You've played all the games!`);
+    }
 }
 
-// playGame(5, new Word('hello world'));
-main(CHOICES);
+promptNextGame();
