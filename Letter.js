@@ -13,11 +13,11 @@ class Letter {
         this.val = val;
         this.guessed = guessed;
         this.nextLetter = nextLetter;
-        if (val === ' ') {
-            this.isSpace = true;
+        if (!/[a-z]/.test(this.val)) {
+            this.isSpecialChar = true;
             this.guessed = true;
         } else {
-            this.isSpace = false;
+            this.isSpecialChar = false;
         }
     }
 
@@ -36,10 +36,7 @@ class Letter {
      * Stringfy this Letter Object
      */
     toString() {
-        if (this.isSpace) {
-            return ' ';
-        }
-        if (this.guessed) {
+        if (this.guessed || this.isSpecialChar) {
             return this.val;
         }
         return '_';

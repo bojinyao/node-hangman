@@ -12,7 +12,8 @@ const TRIES = 10;
 var WINS = 0;
 var LOSSES = 0;
 var CHOICES = shuffle([
-    "hello world", "game of thrones"
+    "hello world", "game of thrones", "i'm sexy and i know it", 
+    "winter is coming", "a dog is a man's best friend"
 ])
 
 //--------------------- Functions ---------------------
@@ -62,7 +63,7 @@ function playGame(tries, wordObj, seen) {
                 if (seen.includes(input)) {
                     return `You've guessed this already!`;
                 }
-                return input.length === 1 && /[a-z]/i.test(input) ? true: `Please only guess one letter at a time!`;
+                return input.length === 1 && /[a-z]/i.test(input) ? true: `Please only guess ` +  `one `.magenta  + `letter`.italic.underline + ` at a time!`;
             }
         }
     ]).then((answer) => {
