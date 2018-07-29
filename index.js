@@ -1,9 +1,21 @@
+//=============
+// Dependencies
+//=============
 const Word = require("./Word");
 const inquirer = require("inquirer");
+const colors = require("colors");
+
+//==========
+// Variables
+//==========
 const TRIES = 10;
+var WINS = 0;
+var LOSSES = 0;
 var CHOICES = shuffle([
     "hello world", "game of thrones"
 ])
+
+//--------------------- Functions ---------------------
 
 /**
  * Shuffles array in place.
@@ -21,20 +33,23 @@ function shuffle(a) {
 }
 
 /**
- * 
+ * Play one round of Hangman and prompt for next round(s)
  * @param {number} tries 
- * @param {Word} wordObj 
+ * @param {Word} wordObj
+ * @param {string[]} seen
  * @returns {boolean} true if a round of game is over
  */
-function playGame(tries, wordObj) {
+function playGame(tries, wordObj, seen) {
     console.log(wordObj.toString());
     if (wordObj.wordCorrect) {
-        console.log(`You guessed it!`)
+        WINS += 1;
+        console.log(`You guessed it!`.bold.blue)
         promptNextGame();
         return true;
     }
     if (tries < 1) {
-        console.log(`You lost this round!`);
+        LOSSES += 1;
+        console.log(`You lost this round!`.bold.red);
         promptNextGame();
         return true;
     }
@@ -44,23 +59,31 @@ function playGame(tries, wordObj) {
             message: `Guess a letter:`,
             name: 'guess',
             validate: (input) => {
-                return input.length === 1 && /[a-z]{1}/i.test(input) ? true: `Please only guess one letter at a time!`;
+                if (seen.includes(input)) {
+                    return `You've guessed this already!`;
+                }
+                return input.length === 1 && /[a-z]/i.test(input) ? true: `Please only guess one letter at a time!`;
             }
         }
     ]).then((answer) => {
-        let guessResult = wordObj.makeGuess(answer.guess);
+        let input = answer.guess.toLowerCase();
+        seen.push(input);
+        let guessResult = wordObj.makeGuess(input);
         if (guessResult) {
-            console.log(`Correct! Tries left: ${tries}`);
-            playGame(tries, wordObj);
+            console.log(`Correct!`.green + ` Tries left: ` + `${tries}`.bold);
+            playGame(tries, wordObj, seen);
         } else {
-            console.log(`NOT Correct! Tries left: ${tries - 1}`);
-            playGame(tries - 1, wordObj);
+            console.log(`NOT Correct!`.yellow + ` Tries left:` + `${tries - 1}`.bold);
+            playGame(tries - 1, wordObj, seen);
         }
 
     })
 
 }
 
+/**
+ * After each round of Hangman, prompt the user for the next round.
+ */
 function promptNextGame() {
     if (CHOICES.length > 0) {
         inquirer.prompt([
@@ -73,14 +96,19 @@ function promptNextGame() {
             if (answer.newGame) {
                 let currWord = new Word(CHOICES[0]);
                 CHOICES = CHOICES.slice(1);
-                playGame(TRIES, currWord);
+                playGame(TRIES, currWord, []);
             } else {
+                console.log(`You won: ${WINS} round(s), lost ${LOSSES} round(s).`);
                 console.log(`You're always welcome back!`);
             }
         })
     } else {
-        console.log(`You've played all the games!`);
+        console.log(`You've played all the games!`.underline);
+        console.log(`You won: ${WINS} round(s), lost ${LOSSES} round(s).`);
     }
 }
 
+//==============
+// Start of Game
+//==============
 promptNextGame();

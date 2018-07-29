@@ -1,5 +1,11 @@
+//=============
+// Dependencies
+//=============
 const Letter = require("./Letter");
 
+/**
+ * A Word Object made of an array of Letter(s)
+ */
 class Word {
     /**
      * 

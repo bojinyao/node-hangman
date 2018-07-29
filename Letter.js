@@ -1,3 +1,6 @@
+/**
+ * A Letter Object that is essentially a wrapper one letter.
+ */
 class Letter {
 
     /**
