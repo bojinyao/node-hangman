@@ -12,6 +12,7 @@ class Letter {
         this.nextLetter = nextLetter;
         if (val === ' ') {
             this.isSpace = true;
+            this.guessed = true;
         } else {
             this.isSpace = false;
         }
