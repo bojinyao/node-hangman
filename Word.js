@@ -13,7 +13,7 @@ class Word {
      * @param {string} guess 
      */
     constructor(secret) {
-        this.secret = secret.toLowerCase();
+        this.secret = secret;
         this.wordCorrect = false;
         this.chars = [];
         for (let i = 0; i < this.secret.length; i ++) {
@@ -24,11 +24,10 @@ class Word {
     /**
      * 
      * @param {string} guess 
-     * @returns {boolean} return true if 
+     * @returns {boolean} return true if guess matches one of the letters, false otherwise.
      */
     makeGuess(guess) {
-        guess = guess.toLowerCase();
-        if (this.secret.includes(guess)) {
+        if (this.secret.toLowerCase().includes(guess.toLowerCase())) {
             this.chars = this.chars.map(letter => letter.makeGuess(guess));
             this.wordCorrect = this.checkCorrectness();
             return true;
@@ -52,16 +51,5 @@ class Word {
         return this.chars.join(" ");
     }
 }
-// let word = new Word('abc');
-// console.log(word);
-// console.log(word.toString())
-// console.log(word.makeGuess('c'));
-// console.log(word);
-// console.log(word.toString());
-// console.log(word.makeGuess('a'));
-// console.log(word.toString());
-// console.log(word.makeGuess('b'));
-// console.log(word.toString());
-// console.log(word);
 
 module.exports = Word;

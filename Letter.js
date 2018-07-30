@@ -13,7 +13,7 @@ class Letter {
         this.val = val;
         this.guessed = guessed;
         this.nextLetter = nextLetter;
-        if (!/[a-z]/.test(this.val)) {
+        if (!/[a-z]/i.test(this.val)) {
             this.isSpecialChar = true;
             this.guessed = true;
         } else {
@@ -26,7 +26,7 @@ class Letter {
      * @param {string} guess 
      */
     makeGuess(guess) {
-        if (guess === this.val) {
+        if (guess.toLowerCase() === this.val.toLowerCase()) {
             this.guessed = true;
         }
         return this;
