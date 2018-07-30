@@ -44,7 +44,7 @@ function playGame(tries, wordObj, seen) {
     console.log(wordObj.toString());
     if (wordObj.wordCorrect) {
         WINS += 1;
-        console.log(`You guessed it!`.bold.blue)
+        console.log(`You guessed it!`.bold.green)
         promptNextGame();
         return true;
     }
